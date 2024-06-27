@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Program Informasi Kelas Siswa</title>
+  <link rel="stylesheet" href="main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Admin - Program Informasi Kelas Siswa</h1>
+  </header>
+  <main>
+    <form id="admin-form">
+      <label for="admin-student-code">Kode Siswa:</label>
+      <input type="text" id="admin-student-code" name="admin-student-code" required>
+      <label for="admin-student-name">Nama Siswa:</label>
+      <input type="text" id="admin-student-name" name="admin-student-name" required>
+      <label for="admin-student-class">Kelas Siswa:</label>
+      <select id="admin-student-class" name="admin-student-class" required>
+        <option value="XI-A">XI-A</option>
+        <option value="XI-B">XI-B</option>
+        <option value="XI-C">XI-C</option>
+        <option value="XI-D">XI-D</option>
+        <option value="XI-E">XI-E</option>
+        <option value="XI-F">XI-F</option>
+        <option value="XI-G">XI-G</option>
+        <option value="XI-H">XI-H</option>
+        <option value="XI-I">XI-I</option>
+        <option value="XI-J">XI-J</option>
+      </select>
+      <button type="submit">Tambah Siswa</button>
+    </form>
+    
+    <div class="file-upload">
+      <label for="upload-xls">Import file .xls</label>
+      <input type="file" id="upload-xls" accept=".xls">
+      <p>Keterangan: Import file .xls dengan format tabel yang berisikan kolom "Nama Siswa", "Kode Siswa", dan "Kelas Siswa".</p>
+    </div>
+    
+    <div class="student-table-container">
+      <h2>Daftar Siswa</h2>
+      <div class="table-controls">
+        <label for="table-limit">Batas Baris:</label>
+        <select id="table-limit">
+          <option value="10">10 Line</option>
+          <option value="20">20 Line</option>
+          <option value="50">50 Line</option>
+        </select>
+        <label for="sort-by-class">Sortir per Kelas:</label>
+        <select id="sort-by-class">
+          <option value="all">Semua Kelas</option>
+          <option value="XI-A">Kelas XI-A</option>
+          <option value="XI-B">Kelas XI-B</option>
+          <option value="XI-C">Kelas XI-C</option>
+          <option value="XI-D">Kelas XI-D</option>
+          <option value="XI-E">Kelas XI-E</option>
+          <option value="XI-F">Kelas XI-F</option>
+          <option value="XI-G">Kelas XI-G</option>
+          <option value="XI-H">Kelas XI-H</option>
+          <option value="XI-I">Kelas XI-I</option>
+          <option value="XI-J">Kelas XI-J</option>
+        </select>
+      </div>
+      <table id="student-table">
+        <thead>
+          <tr>
+            <th>Nama Siswa</th>
+            <th>Kode Siswa</th>
+            <th>Kelas Siswa</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="admin-student-list">
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2024 Program Informasi Kelas Siswa</p>
+  </footer>
+  <script src="admin.js"></script>
+</body>
+</html>
