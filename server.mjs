@@ -144,5 +144,5 @@ app.post("/api/update-students", express.json(), async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server started at port ${PORT}`);
 });
