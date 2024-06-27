@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Admin - Program Informasi Kelas Siswa</title>
+    <link rel="author" href="https://sman3-malang.sch.id">
+    <meta name="author" content="SMA Negeri 3 Malang">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="icon" href="/favicons/favicon-16x16.ico" sizes="16x16" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-32x32.ico" sizes="32x32" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-96x96.ico" sizes="96x96" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-128x128.ico" sizes="128x128" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-192x192.ico" sizes="192x192" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-196x196.ico" sizes="196x196" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-256x256.ico" sizes="256x256" type="image/x-icon">
+    <link rel="icon" href="/favicons/favicon-512x512.png" sizes="512x512" type="image/png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-57x57.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-60x60.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-72x72.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-76x76.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-114x114.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-120x120.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-144x144.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-152x152.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-167x167.png">
+    <link rel="apple-touch-icon" href="/favicons/favicon-apple-180x180.png">
+    <meta name="msapplication-TileImage" content="/favicons/favicon-mstile-144x144.png">
+    <meta name="msapplication-square70x70logo" content="/favicons/favicon-mstile-70x70.png">
+    <meta name="msapplication-square144x144logo" content="/favicons/favicon-mstile-144x144.png">
+    <meta name="msapplication-square150x150logo" content="/favicons/favicon-mstile-150x150.png">
+    <meta name="msapplication-square310x310logo" content="/favicons/favicon-mstile-310x310.png">
+
+    <link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js" integrity="sha512-dlPw+ytv/6JyepmelABrgeYgHI0O+frEwgfnPdXDTOIZz+eDgfW07QXG02/O8COfivBdGNINy+Vex+lYmJ5rxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Admin - Program Informasi Kelas Siswa</h1>
+    </header>
+    <main>
+      <script>
+        window.classes = <%- JSON.stringify(classes) %>;
+        window.students = <%- JSON.stringify(students) %>;
+      </script>
+
+      <form id="addclass-form">
+        <h2>Tambah Kelas</h2>
+        <label for="addclass-name">Nama Kelas:</label>
+        <input type="text" id="addclass-name" name="addclass-name" required>
+        <label for="addclass-subjects">Subjek Kelas:</label>
+        <input type="text" id="addclass-subjects" name="addclass-subjects" required>
+        <button type="submit">Tambah Kelas</button>
+      </form>
+      <script>
+        const addClassFormElement = document.getElementById("addclass-form");
+        addClassFormElement.addEventListener("submit", async e => {
+          e.preventDefault();
+          const addClassFormData = new FormData(addClassFormElement);
+          const className = addClassFormData.get("addclass-name");
+          const classSubjects = addClassFormData.get("addclass-subjects");
+          if(classes.some(c => c.name == className)) {
+            alert("Sudah terdapat kelas dengan nama yang sama!");
+            return;
+          }
+          classes.push({ name: className, subjects: classSubjects });
+          const response = await fetch("/api/update-classes", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(classes)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menambahkan!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        });
+      </script>
+
+      <form id="addstudent-form">
+        <h2>Tambah Siswa</h2>
+        <label for="addstudent-id">Kode Siswa:</label>
+        <input type="text" id="addstudent-id" name="addstudent-id" required>
+        <label for="addstudent-name">Nama Siswa:</label>
+        <input type="text" id="addstudent-name" name="addstudent-name" required>
+        <label for="addstudent-classof">Kelas Siswa:</label>
+        <select id="addstudent-classof" name="addstudent-classof" required>
+          <%- classes.map(c => `<option value="${c.name}">${c.name}</option>`).join("\n") %>
+        </select>
+        <button type="submit">Tambah Siswa</button>
+      </form>
+      <script>
+        const addStudentFormElement = document.getElementById("addstudent-form");
+        addStudentFormElement.addEventListener("submit", async e => {
+          e.preventDefault();
+          const addStudentFormData = new FormData(addStudentFormElement);
+          const studentId = addStudentFormData.get("addstudent-id");
+          const studentName = addStudentFormData.get("addstudent-name");
+          const studentClassOf = addStudentFormData.get("addstudent-classof");
+          if(students.some(c => c.id == studentId)) {
+            alert("Sudah terdapat siswa dengan kode yang sama!");
+            return;
+          }
+          students.push({ id: studentId, name: studentName, classOf: studentClassOf });
+          const response = await fetch("/api/update-students", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(students)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menambahkan!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        });
+      </script>
+
+      <div class="table-container">
+        <h2>Daftar Kelas</h2>
+        <button onclick='deleteAllClasses()'>Hapus Semua</button>
+        <table id="classes-table">
+          <thead>
+            <tr>
+              <th>Nama Kelas</th>
+              <th>Subjek Kelas</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%-
+            classes.map(c => `
+              <tr>
+                <td>${c.name}</td>
+                <td>${c.subjects}</td>
+                <td><button onclick='deleteClass("${c.name}")'>🚫</button></td>
+              </tr>
+            `)
+            %>
+          </tbody>
+        </table>
+      </div>
+      <script>
+        new DataTable("#classes-table");
+        async function deleteClass(name) {
+          const index = classes.findIndex(s => s.name == name);
+          if(index == -1) return;
+          classes.splice(index, 1);
+          const response = await fetch("/api/update-classes", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(classes)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menghapus!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        }
+        async function deleteAllClasses() {
+          if(classes.length == 0) return;
+          classes.splice(0);
+          const response = await fetch("/api/update-classes", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(classes)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menghapus!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        }
+      </script>
+
+      <div class="table-container">
+        <h2>Daftar Siswa</h2>
+        <button onclick='deleteAllStudents()'>Hapus Semua</button>
+        <button onclick='importStudents()'>Impor Siswa</button>
+        <p style="font-size: 0.8rem;">Keterangan: Download file template impor <a href="/template-tambah-siswa.xlsx" download>disini</a>.</p>
+        <table id="students-table">
+          <thead>
+            <tr>
+              <th>Kode Siswa</th>
+              <th>Nama Siswa</th>
+              <th>Kelas Siswa</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%-
+            students.map(s => `
+              <tr>
+                <td>${s.id}</td>
+                <td>${s.name}</td>
+                <td>${s.classOf}</td>
+                <td><button onclick='deleteStudent("${s.id}")'>🚫</button></td>
+              </tr>
+            `)
+            %>
+          </tbody>
+        </table>
+      </div>
+      <script>
+        new DataTable("#students-table");
+        async function deleteStudent(id) {
+          const index = students.findIndex(s => s.id == id);
+          if(index == -1) return;
+          students.splice(index, 1);
+          const response = await fetch("/api/update-students", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(students)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menghapus!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        }
+        async function deleteAllStudents() {
+          if(students.length == 0) return;
+          students.splice(0);
+          const response = await fetch("/api/update-students", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(students)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menghapus!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        }
+        async function importStudents() {
+          const inputElement = document.createElement("input");
+          inputElement.type = "file";
+          inputElement.style.position = "absolute"
+          inputElement.style.left = "-9999px";
+          inputElement.style.top = "-9999px";
+          inputElement.style.opacity = "0";
+          inputElement.style.width = "0";
+          inputElement.style.height = "0";
+          inputElement.style.visibility = "hidden";
+          await new Promise((resolve, reject) => {
+            const onChange = () => { cleanup(); resolve(); };
+            const onCancel = () => { cleanup(); reject(); };
+            const cleanup = () => {
+              inputElement.removeEventListener("change", onChange);
+              document.body.removeEventListener("focus", onCancel);
+            };
+            inputElement.addEventListener("change", onChange);
+            document.body.addEventListener("focus", onCancel);
+            inputElement.click();
+          });
+          const file = inputElement.files[0];
+          const buffer = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = e => reject(e);
+            reader.readAsArrayBuffer(file);
+          });
+          const workbook = new ExcelJS.Workbook();
+          await workbook.xlsx.load(buffer);
+          const worksheet = workbook.getWorksheet(1);
+          for(let i = 2; i <= worksheet.rowCount; i++) {
+            const studentId = worksheet.getCell(`A${i}`).value;
+            const studentName = worksheet.getCell(`B${i}`).value;
+            const studentClassOf = worksheet.getCell(`C${i}`).value;
+            if(studentId == null && studentName == null && studentClassOf == null) continue;
+            if(students.some(s => s.id == studentId)) continue;
+            students.push({ id: studentId, name: studentName, classOf: studentClassOf });
+          }
+          const response = await fetch("/api/update-students", {
+            method: "POST",
+            headers: new Headers({ "Content-Type": "application/json" }),
+            body: JSON.stringify(students)
+          });
+          const responseText = await response.text();
+          if(!response.ok)
+            alert(`Terdapat masalah pada saat menambahkan!\n(${response.status}) ${responseText}`);
+          window.location.reload();
+        }
+      </script>
+    </main>
+    <footer>
+      <p>&copy; 2024 Program Informasi Kelas Siswa by Marchellino G | SMAN 3 Malang | All rights reserved</p>
+    </footer>
+  </body>
+</html>

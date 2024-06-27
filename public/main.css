@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 body {
   font-family: 'Montserrat', sans-serif;
   background: linear-gradient(to right, #a1c4fd, #c2e9fb);
@@ -6,6 +8,10 @@ body {
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 header, footer {
@@ -21,18 +27,23 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0 30px;
 }
 
 form {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 30rem;
   background: white;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-label, input {
+form label, form input {
   display: block;
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 button {
@@ -49,8 +60,44 @@ button:hover {
   background-color: #4a90e2;
 }
 
+.table-container {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 80rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.table-container .dt-layout-table {
+  overflow: auto;
+}
+
+.info-table {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 30rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.info-table table {
+  width: 100%;
+  border-spacing: 0;
+  margin-bottom: 20px;
+}
+.info-table table td:nth-child(1) {
+  color: rgb(51, 51, 51);
+  font-weight: 700;
+}
+.info-table table tr > td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 768px) {
-  form {
-    width: 90%;
+  main {
+    padding: 0 15px;
   }
 }
